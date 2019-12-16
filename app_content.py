@@ -12,19 +12,15 @@ class AppContent:
         print("Do you want to join a existing group above?")
         response = input()
 
-    def show_balances(self, user):
+    def show_balances(self, email):
         # look for "user's" data in the database and show, how much he owe's to everyone
-        pass
-        print("Hello from app_content ", user)
-        balances = {"Ethan": {"Siva": 0, "Nash": 0},
-                    "Siva": {"Ethan": 0, "Nash": 0},
-                    "Nash": {"Siva": 0, "Ethan": 0}
-                    }
+        result = self.sql.query_result("SELECT display_name FROM user WHERE username='%s'" % email, "array")
+        print("Hello %s", result[0])
         print("Your current balances are")
         for i in balances:
             if i == user:
                 for j in balances[i]:
                     print(user, " owes - ", j, " ", balances[i][j])
 
-    def hello(self):
+    def hello(self):  # hello method for checking successful login
         print("Hello from AppContent")
