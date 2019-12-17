@@ -11,19 +11,19 @@ class UserManagement:
         pass
 
     def authenticate(self):
-        print("Enter username/email-id: ", end="")
+        print("<LOG IN WINDOW> \n=================\nEnter username/email-id: ", end="")
         email = input()
-        result = self.sql.query_result("SELECT username FROM users ", "array")  # check if username is in user table
-        if email in result:
+        result1 = self.sql.query_result("SELECT username FROM users ", "array")  # check if username is in user table
+        if email in result1:
             pass
         else:
             print("Invalid username")
             self.start()  # return back to start() - shit, here we go again.....
         # if username exists then  match password......,
         pwd = getpass.getpass()  # getting password hidden with getpass module
-        result = self.sql.query_result("SELECT passwd FROM users WHERE username = '%s'" % email, "array")
-        if result[0] == pwd:
-            print("logging you in....")
+        result2 = self.sql.query_result("SELECT passwd FROM users WHERE username = '%s'" % email, "array")
+        if result2[0] == pwd:
+            print("=================\nLogging you in....")
             self.content.hello()  # authentication successful - then print
         else:
             print("Try again")
@@ -47,15 +47,15 @@ class UserManagement:
         if pwd_1 == pwd_2:
             pass
         else:
-            print("passwords don'2t match! try again....")
+            print("passwords don't match! try again....")
             self.new_user()  # control goes to first line again, lot of work, need to change....
         query = "INSERT INTO users(username, display_name, passwd, temporal_id) \
-        VALUES(%s, %s, %s, NOW())" % (email, name, pwd_1)
-        self.sql.query_result(query, "none")
+        VALUES('%s', '%s', '%s', now())" % (email, name, pwd_1)
+        self.sql.query_result(query, "commit")
         print("User account created successfully....")
         self.authenticate()
 
-    def start(self):
+    def start(self):  # Where the app initializes - non repetitive initial processes are defined here...
         print("1) New user \n2) Existing User")
         choice = int(input())
         if choice == 2:
@@ -65,4 +65,5 @@ class UserManagement:
         else:
             print("Enter a valid choice....")
             self.start()
+        self.sql.db.close()  # Closing the db connection at the end of start function
 

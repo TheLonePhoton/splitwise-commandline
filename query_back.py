@@ -15,8 +15,10 @@ class QueryBack:
         res = self.cursor.fetchall()
         if out_type == "array":
             result = list(sum(res, ()))
+            self.db.commit()
             return result
         elif out_type == "raw":
+            self.db.commit()
             return res
         elif out_type == "commit":
             self.db.commit()  # saving the changes to db permanently...
@@ -27,20 +29,20 @@ class QueryBack:
         # One time run, methods
         #   > transaction record table creation
         #   > cumulative table creation
-    def new_group(self, grp_name, creater):
+    def new_group(self, grp_name, creator):
         try:
+            self.query_result("INSERT INTO groups_info VALUES(")
             self.query_result("CREATE TABLE %s_transaction(\
                               trans_id INT NOT NULL AUTO INCREMENT PRIMARY KEY, \
                               Amount INT(100) NOT NULL,\
                               %s INT(100),\
-                              TimeStamp DATETIME NOT NULL)" % (grp_name, creater), "commit") # TRANSACTION TABLE QUERY
+                              TimeStamp DATETIME NOT NULL)" % (grp_name, creator), "commit") # TRANSACTION TABLE QUERY
             self.query_result("CREATE TABLE %s_cumulative(\
                               username VARCHAR(100) NOT NULL PRIMARY KEY,\
-                              %s INT(100) NOT NULL)" % (grp_name, creater), "commit")  # CUMULATIVE TABLE QUERY
-            self.query_result("INSERT INTO %s_cumulative (username) VALUES (%s)" % (grp_name, creater), "commit") # Add creater to cumulative table
-        finally:
-            #  self.db.commit()
-            pass
+                              %s INT(100) NOT NULL)" % (grp_name, creator), "commit")  # CUMULATIVE TABLE QUERY
+            self.query_result("INSERT INTO %s_cumulative (username) VALUES (%s)" % (grp_name, creator), "commit") # Add creator to cumulative table
+        except:
+            self.db.rollback()
 
     def add_to_group(self, group, username):
         try:
@@ -49,9 +51,24 @@ class QueryBack:
             self.query_result("ALTER TABLE %s_cumulative ADD %s INT(100) NOT NULL\
                               AFTER username" % (group, username), "commit") # Add new username to cumulative table
             self.query_result("INSERT INTO %s_cumulative (username) VALUES (%s)" % (group, username), "commit")
-        finally:
-            pass
+            # Add username as a first record since cumulative table...
+        except:
+            self.db.rollback()
 
+    def group_users(self, groupname):
+        try:
+            result = self.query_result("SELECT username FROM %s_cumulative" % groupname, "array")
+            return result
+        except:
+            self.db.rollback()
+
+# Only one time run methods...
+    def group_table(self):
+        self.query_result("CREATE TABLE groups_info(\
+                          group_id INT NOT NULL PRIMARY KEY AUTO INCREMENT,\
+                          group_name VARCHAR(100) NOT NULL,\
+                          creator VARCHAR(100) NOT NULL,\
+                          time_stamp DATETIME NOT NULL")
 
 # main
 sql = QueryBack()  # query back object...
@@ -60,4 +77,5 @@ sql = QueryBack()  # query back object...
         > check in the cumulative table first column values...
         
         NEED FLAGS AND COUNTERS FOR NUMBER OF USERS CURRENTLY, NUMBER OF USERS in a group, number 
+        NEW GROUP NEEDS group id - group id is unique - a separate table for group names and creator
  '''

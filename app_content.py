@@ -22,5 +22,6 @@ class AppContent:
                 for j in balances[i]:
                     print(user, " owes - ", j, " ", balances[i][j])
 
-    def hello(self):  # hello method for checking successful login
-        print("Hello from AppContent")
+    def login_options(self, user):  # hello method for checking successful login
+        print("Choose any option: \n1) Create group")
+        for i in group_user()
