@@ -31,7 +31,8 @@ class QueryBack:
         #   > cumulative table creation
     def new_group(self, grp_name, creator):
         try:
-            self.query_result("INSERT INTO groups_info VALUES(")
+            self.query_result("INSERT INTO groups_info(group_name, creator, time_stamp)\
+                              VALUES('%s', '%s', NOW())" % (grp_name, creator), "commit")  # Create a entry in group table, for new group creation..
             self.query_result("CREATE TABLE %s_transaction(\
                               trans_id INT NOT NULL AUTO INCREMENT PRIMARY KEY, \
                               Amount INT(100) NOT NULL,\
@@ -55,12 +56,13 @@ class QueryBack:
         except:
             self.db.rollback()
 
-    def group_users(self, groupname):
+    def group_users(self, group_name):
         try:
-            result = self.query_result("SELECT username FROM %s_cumulative" % groupname, "array")
+            result = self.query_result("SELECT username FROM %s_cumulative" % group_name, "array")
             return result
         except:
             self.db.rollback()
+
 
 # Only one time run methods...
     def group_table(self):
@@ -69,6 +71,7 @@ class QueryBack:
                           group_name VARCHAR(100) NOT NULL,\
                           creator VARCHAR(100) NOT NULL,\
                           time_stamp DATETIME NOT NULL")
+
 
 # main
 sql = QueryBack()  # query back object...
