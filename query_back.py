@@ -2,7 +2,7 @@ import pymysql
 
 
 class QueryBack:
-    db = pymysql.connect("localhost", "root", "Vaaariable", "splitwise_test")  # establishing a DB connection
+    db = pymysql.connect("localhost", "test", "tset", "splitwise_test")  # establishing a DB connection
     cursor = db.cursor()
 
     def query_result(self, query, out_type):
@@ -71,6 +71,9 @@ class QueryBack:
                           group_name VARCHAR(100) NOT NULL,\
                           creator VARCHAR(100) NOT NULL,\
                           time_stamp DATETIME NOT NULL")
+
+    def users_table(self):
+        self.query_result("")
 
 
 # main
