@@ -18,7 +18,7 @@ class OneTimeRun:
         try:
             sql.query_result("DROP TABLE IF EXISTS groups_info\
                               CREATE TABLE groups_info(\
-                              group_id INT NOT NULL PRIMARY KEY AUTO INCREMENT,\
+                              group_id INT PRIMARY KEY AUTO INCREMENT,\
                               group_name VARCHAR(100) NOT NULL,\
                               creator VARCHAR(100) NOT NULL,\
                               time_stamp DATETIME NOT NULL")  # create group
