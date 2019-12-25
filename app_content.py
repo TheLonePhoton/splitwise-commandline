@@ -1,5 +1,6 @@
 from support_queries import *
 from query_back import *
+import group_mgmt
 
 
 class AppContent:
@@ -15,7 +16,8 @@ class AppContent:
         # look for "user's" data in the database and show, how much he owe's to everyone
         result = sql.query_result("SELECT display_name FROM user WHERE username='%s'" % email, "array")
         print("Hello %s", result[0])
-        print("Your current balances are")
+        print("Your current balances are....")
+        # Print info from cumulative table
 
     def login_options(self, username):  # hello method for checking successful login
         print("Choose any option: \n1) Create group \n2) Choose existing group(type group name and enter) : ", end='')
@@ -23,9 +25,11 @@ class AppContent:
         for i in result: print(i, end=', ')
         response = input()
         if response == '1':
-            sql.new_group(username)  # create group method, username = creator
+            group_mgmt.new_group(username)  # create group method, username = creator
             self.login_options(username)
         elif response in list_of_groups():
             pass  # Show balances in that group
+            self.show_balances(username)
 
         #  How to add more than group for if he's in more than one group??
+

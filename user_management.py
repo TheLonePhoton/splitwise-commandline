@@ -24,7 +24,7 @@ class UserManagement:
         result2 = self.sql.query_result("SELECT passwd FROM users WHERE username = '%s'" % email, "array")
         if result2[0] == pwd:
             print("=================\nLogging you in....")
-            self.content.hello()  # authentication successful - then print
+            self.content.login_options(email)  # authentication successful - then print
         else:
             print("Try again")
             self.authenticate()
