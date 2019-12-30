@@ -29,21 +29,23 @@ def new_group(creator):
         sql.db.rollback()  # Don't rollback will occur for which commit above
 
     finally:
-        self.add_to_group(group_name, creator)  # Creator added to group successfully...
+        add_to_group(group_name, creator)  # Creator added to group successfully...
         print("Group created successfully...\n Do you wanna add more members to group? Yes or No")
         response = input()
         if response.lower() == "yes":
-            self.add_to_group(group_name, creator)
+            add_to_group(group_name, creator)
         else:
             login_obj = AppContent()
             login_obj.login_options(creator)
 
 
 def add_to_group(group_name, username):
-    if username not in support_queries.list_of_users():
+    result = support_queries.list_of_users()
+    print(result)
+    if username not in result:
         print("Enter a valid username(email) to add: ")
         username = input().lower()
-        self.add_to_group(group_name, username)
+        add_to_group(group_name, username)
     else:
         pass  # Add username to group
     # ADD USERS QUERY >
@@ -60,7 +62,7 @@ def add_to_group(group_name, username):
         print("User added successfully...\nDo you wanna add more members to group? Yes or No")
         response = input()
         if response.lower() == "yes":
-            self.add_to_group(group_name, username)
+            add_to_group(group_name, username)
         else:
             login_obj = AppContent()
             login_obj.login_options(username)
